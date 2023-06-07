@@ -1,6 +1,6 @@
 import os
 
-data_dir = os.abspath(os.getcwd() + "/../../")
+data_dir = os.path.abspath(os.getcwd() + "/../../")
 
 
 import datetime
