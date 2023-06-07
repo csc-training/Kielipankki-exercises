@@ -4,6 +4,9 @@ import logging
 
 def _is_comment(s): return s.startswith('<!--') and s.endswith('-->')
 
+def _is_buggy_comment(s):
+    return s.startswith('<--') and s.endswith('-->')
+
 def _is_opening_tag(s):
     return s.startswith('<') and (not s.startswith('</')) and s.endswith('>')
 
@@ -54,7 +57,8 @@ class VrtReader:
         else:
             fobj = fobj_or_filename
         firstline = fobj.readline().strip()
-        if not _is_comment(firstline) or ':' not in firstline:
+        if not (_is_comment(firstline) or _is_buggy_comment(firstline)) \
+           or ':' not in firstline:
             raise Exception(
                 "Couldn't find positional argument comment in first line")
         positional_args_start = firstline.index(':') + 1
