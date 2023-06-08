@@ -29,7 +29,7 @@ def _get_tag_name_and_attribs(tag):
     return (name, attribs)
 
 class VrtReader:
-    
+    'Read and provide an interface to a VRT file.'
     class VrtText:
         
         def __init__(self, attribs):
@@ -51,11 +51,12 @@ class VrtReader:
             self.attribs = attribs
             self.tokens = []
             
-    def __init__(self, fobj_or_filename):
-        if type(fobj_or_filename) == str:
-            fobj = open(fobj_or_filename)
+    def __init__(self, vrt_file):
+        'vrt_file should be either a file object or a file name.'
+        if type(vrt_file) == str:
+            fobj = open(vrt_file)
         else:
-            fobj = fobj_or_filename
+            fobj = vrt_file
         firstline = fobj.readline().strip()
         if not (_is_comment(firstline) or _is_buggy_comment(firstline)) \
            or ':' not in firstline:
@@ -81,6 +82,7 @@ class VrtReader:
                 self.texts[-1].sentences[-1].tokens.append(line.split('\t'))
 
     def info(self):
+        'Return a multi-line string with some summary information.'
         text_attribs = set()
         sentence_attribs = set()
         n_texts = len(self.texts)
@@ -108,7 +110,8 @@ Token fields are
 {token_fields_txt}
 '''
 
-    def token_values(self, field):
+    def field_values(self, field):
+        'Return a list of values seen in a named field'
         values = set()
         if field not in self.token_fields:
             raise ValueError(f"Requested field {field} not present. Available fields are {self.token_fields}")
@@ -120,17 +123,22 @@ Token fields are
         return list(values)
 
     def map_tokens_to_field(self, tokens, field):
+        'Given a list of tokens and a field name, return a list of values in that field'
         if field not in self.token_fields:
             raise ValueError(f"Requested field {field} not present. Available fields are {self.token_fields}")
         idx = self.token_fields.index(field)
         return [token[idx] for token in tokens]
 
     def token_field_is_value(self, token, field, value):
+        'True iff given token has given value in given field'
         if field not in self.token_fields:
             raise ValueError(f"Requested field {field} not present. Available fields are {self.token_fields}")
         idx = self.token_fields.index(field)
+        if '|' in token[idx]:
+            values = token[idx].split("|")
+            if value in values:
+                return True
         return token[idx] == value
-
 
 if __name__ == '__main__':
     import sys
