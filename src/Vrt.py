@@ -13,7 +13,6 @@ def _is_opening_tag(s):
 def _is_closing_tag(s):
     return s.startswith('</') and s.endswith('>')
 
-#attribs_re = re.compile(r'[^ ="]+="(?:[^"]|(?:\"))+"')
 _attribs_re = re.compile(r'[^ ="]+="[^"]+"')
 def _get_tag_name_and_attribs(tag):
     tag = tag[1:-1] # strip <>
