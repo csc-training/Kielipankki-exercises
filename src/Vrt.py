@@ -76,7 +76,9 @@ class VrtReader:
                 elif name == "sentence":
                     self.texts[-1].sentences.append(self.VrtSentence(attribs))
                 else:
-                    logging.warning(f"Ignored <{name}> element on line {i+1} - we only handle text and sentence elements!")
+                    pass
+                    # Better to silently suppress this for now - otherwise the Notebooks can get very noisy
+                    # logging.warning(f"Ignored <{name}> element on line {i+1} - we only handle text and sentence elements!")
             else: # Should be a token
                 self.texts[-1].sentences[-1].tokens.append(line.split('\t'))
 
