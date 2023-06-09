@@ -1,7 +1,6 @@
 import os
 
 data_dir = os.path.abspath(os.getcwd() + "/../../")
-data_dir = "/home/shardwic/github/nlp-tools/vrt/"
 
 import datetime
 
