@@ -70,7 +70,7 @@ class VrtReader:
             self.attribs = attribs
             self.tokens = []
             
-    def __init__(self, vrt_file, callback = None):
+    def __init__(self, vrt_file, max_texts = None):
         'vrt_file should be either a file object or a file name.'
         if type(vrt_file) == str:
             fobj = open(vrt_file)
@@ -86,14 +86,14 @@ class VrtReader:
         self.token_fields = firstline[positional_args_start:positional_args_stop].strip().split()
         self.texts = [] # this will contain sublists of attribs and children
         for i, line in tqdm.tqdm(enumerate(fobj), initial = 1, desc = "Reading VRT", unit = " lines"):
-            # if i+1 % 100000 == 0:
-            #     sys.stdout.write(f'\r{i+1} lines read')
             line = line.strip()
             if _is_closing_tag(line) or _is_comment(line) or line == '':
                 continue # We ignore complicated XML possibilities
             elif _is_opening_tag(line):
                 name, attribs = _get_tag_name_and_attribs(line)
                 if name == "text":
+                    if max_texts and len(self.texts) >= max_texts:
+                        return
                     self.texts.append(self.VrtText(attribs))
                 elif name == "sentence":
                     self.texts[-1].sentences.append(self.VrtSentence(attribs))
@@ -101,7 +101,7 @@ class VrtReader:
                     pass
                     # Better to silently suppress this for now - otherwise the Notebooks can get very noisy
                     # logging.warning(f"Ignored <{name}> element on line {i+1} - we only handle text and sentence elements!")
-            else: # Should be a token
+            else: # This should be a token
                 self.texts[-1].sentences[-1].tokens.append(line.split('\t'))
 
     def info(self):
