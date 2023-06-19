@@ -259,7 +259,7 @@ This doesn't really save any processing time, due to communication overhead bein
 
 <details><summary>Hint 1</summary>
 
-The `Dictionary` object has a method .merge_with(other), which we can use to turn a collection of dictionaries into one. But to do this we also need to split the source data, which is a list, into sublists.
+The {% highlight %} Dictionary {% endhighlight %} object has a method .merge_with(other), which we can use to turn a collection of dictionaries into one. But to do this we also need to split the source data, which is a list, into sublists.
 </details>
 
 <details><summary>Hint 2</summary>
