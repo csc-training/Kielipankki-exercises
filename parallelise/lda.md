@@ -31,17 +31,16 @@ There are essentially three alternatives for installing Python dependencies:
 2) Installing in a virtual environment with `venv` or `conda`. This has some downsides on the HPC systems, causing slow startup times and unnecessary IO load on the whole system.
 3) An Apptainer container, for which we have our custom tool `tykky`, which is usually the ideal option.
 
-If you have a `requirements.txt` file, as we do here, installing them into a `tykky` environment is in principle simple, as long as your libraries support the default Python version, which at the time of writing is 3.6. Unfortunately, that's too old for us, so we'll first make a temporary `venv` in which to build the `tykky` container with python3.9. So we do:
+If you have a `requirements.txt` file, as we do here, installing them into a `tykky` environment is in principle simple, as long as your libraries support the default Python version, which at the time of writing is 3.6. Unfortunately, that's too old for us, so we'll first make a `venv` in which to build the `tykky` container with python3.9. So we do:
 
 ```bash
 $ mkdir tykky-env                                                                                 # the tykky environment will go here
-$ python3.9 -m venv tmp-venv                                                                      # create a temporary venv with the correct Python version
-$ source tmp-venv/bin/activate                                                                    # step into the venv
+$ python3.9 -m venv venv                                                                          # create a venv with the correct Python version
+$ source venv/bin/activate                                                                        # step into the venv
 $ module load tykky                                                                               # load the tykky module
-$ pip-containerize new --prefix /scratch/<project>/$USER/lda requirements.txt                     # or whatever directory you chose
-$ deactivate                                                                                      # exit the temporary venv
-$ rm -rf tmp-venv                                                                                 # not needed anymore
-$ export PATH="/scratch/<project>/$USER/csc-training/lda/tykky-env/bin:$PATH"                     # make the tykky environment visible
+$ pip-containerize new --prefix /scratch/<project>/$USER/lda/tykky-env requirements.txt           # or whatever directory you chose
+$ deactivate                                                                                      # exit the venv
+$ export PATH="/scratch/<project>/$USER/lda/tykky-env/bin:$PATH"                                  # make the tykky environment visible
 ```
 
 For the rest of this session, your default Python environment will have the packages from `requirements.txt` installed. After logging out, things will be back to the way they were before. Then you can `export PATH` again, or set the path on every login in eg. `.bash_profile`.
@@ -114,7 +113,7 @@ The attributes come from the data source, and there's no general rule as to what
 
 ## Data processing
 
-💬 Moving on, we can try to run `parse_vrt.py`, which by default builds lists of lemmas of each text, and then does nothing with them. It should look something like this:
+💬 Moving on, we can try to run `parse_vrt.py`, which by default builds lists of lemmas of each text, and then does nothing with them. Make sure you're still in the `lda/` directory and try running the script. It should look something like this:
 
 ```bash
 $ python3 parse_vrt.py $TMPDIR/ylenews-fi-2019-2021-s-vrt/vrt
